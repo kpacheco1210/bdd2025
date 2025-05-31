@@ -264,7 +264,7 @@ ADD CONSTRAINT PK_Envio PRIMARY KEY (env_codigo);
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Sillon]
 ADD CONSTRAINT FK_Sillon_ModeloSillon
-FOREIGN KEY (sill_modelo) REFERENCES [CUADRADITOS_DE_RICOTA].Sillon(sill_codigo);
+FOREIGN KEY (sill_modelo) REFERENCES [CUADRADITOS_DE_RICOTA].ModeloSillon(mod_codigo);
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Sillon]
 ADD CONSTRAINT FK_Sillon_Dimension
@@ -431,18 +431,18 @@ BEGIN
         FROM [GD1C2025].[gd_esquema].[Maestra]
         where Material_Precio is not null
     END;
-        PRINT 'carga tabla sillon_material'
+    PRINT 'carga tabla sillon_material'
     BEGIN
-        INSERT INTO [CUADRADITOS_DE_RICOTA].[sillon_material] (sima_sillon,sima_material)
-        --TODO ESTO DE ACA ABAJO ES PARA Q NO TIRE EL ERROR NO MAS, NO SIRVE PARA NADA
-        SELECT [Sillon_Codigo]
-        FROM [GD1C2025].[gd_esquema].[Maestra]
+        INSERT INTO [CUADRADITOS_DE_RICOTA].[sillon_material] (sima_sillon, sima_material)
+        SELECT DISTINCT [Sillon_Codigo], M.mat_codigo
+        FROM [GD1C2025].[gd_esquema].[Maestra] Maestra
+        JOIN [CUADRADITOS_DE_RICOTA].[Material] M 
+            ON Maestra.[Material_Descripcion] = M.mat_descripcion 
+            AND Maestra.[Material_Nombre] = M.mat_nombre
+            AND Maestra.[Material_Precio] = M.mat_precio
+        WHERE Maestra.[Sillon_Codigo] IS NOT NULL 
+          AND Maestra.[Material_Descripcion] IS NOT NULL
     END;
-
-                 /*   CREATE TABLE [CUADRADITOS_DE_RICOTA].[sillon_material](
-                        sima_sillon bigint not null,--pk fk
-                        sima_material int not NULL, --pk fk
-                    );*/
 
         PRINT 'cargar tabla Madera'
     BEGIN
@@ -559,18 +559,16 @@ BEGIN
         from [GD1C2025].[gd_esquema].[Maestra] 
         where Pedido_Estado is not null   
     END;
-        PRINT 'carga tabla Pedido'
+    PRINT 'carga tabla Pedido'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Pedido](ped_sucursal,ped_cliente,ped_fecha,ped_total,ped_estado,ped_cancelacion,ped_numero)
         select distinct sucu_codigo,clie_codigo,Pedido_Fecha,Pedido_Total,est_codigo,pedCan_codigo,Pedido_Numero
-        from [GD1C2025].[gd_esquema].[Maestra]  JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=Sucursal_NroSucursal
-                                                JOIN [CUADRADITOS_DE_RICOTA].[Detalle_compra] on    Detalle_Compra_Cantidad +Detalle_Compra_Precio +Detalle_Compra_SubTotal =
-                                                                                                    detC_cantidad           +detC_precioUnitario   +detC_subtotal
-                                                JOIN [CUADRADITOS_DE_RICOTA].[Estado] on Pedido_Estado=est_nombre
-                                                left JOIN [CUADRADITOS_DE_RICOTA].[PedidoCancelacion] on Pedido_Cancelacion_Fecha=pedCan_fecha
+        from [GD1C2025].[gd_esquema].[Maestra]  
+        JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=sucu_codigo
+        JOIN [CUADRADITOS_DE_RICOTA].[Cliente] on clie_dni = Cliente_Dni
+        JOIN [CUADRADITOS_DE_RICOTA].[Estado] on Pedido_Estado=est_nombre
+        LEFT JOIN [CUADRADITOS_DE_RICOTA].[PedidoCancelacion] on Pedido_Cancelacion_Fecha=pedCan_fecha and Pedido_Cancelacion_Motivo=pedCan_motivo
         where Pedido_Numero is not null
-  
-        --TODO  no si esto esta bn     
     END;
         PRINT 'carga tabla Detalle_pedido'
     BEGIN
@@ -579,34 +577,40 @@ BEGIN
         from [GD1C2025].[gd_esquema].[Maestra]  JOIN [CUADRADITOS_DE_RICOTA].[Pedido] on Pedido_Numero=ped_numero
         where Detalle_Pedido_Cantidad is not null
     END;
-        PRINT 'carga tabla detalle_facturacion'
+    PRINT 'carga tabla detalle_facturacion'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[detalle_facturacion](detF_detallePedido,detF_precioUnitario,detF_cantidad,detF_subtotal)     
-        select distinct Detalle_Pedido_Cantidad,Detalle_Factura_Precio,Detalle_Factura_Cantidad,Detalle_Factura_SubTotal
-        from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].[Detalle_pedido] on --Detalle_Pedido_Cantidad +Detalle_Pedido_Precio +Detalle_Pedido_SubTotal =
-                                                                                                --detP_cantidad           +detP_precio           +detP_subtotal
-                                                                                                Pedido_Numero=detP_pedido  --Por ahi conviene esto?
-        where Detalle_Factura_Cantidad is not null
+        SELECT DISTINCT detP_codigo, Detalle_Factura_Precio, Detalle_Factura_Cantidad, Detalle_Factura_SubTotal
+        FROM [GD1C2025].[gd_esquema].[Maestra] M
+        INNER JOIN [CUADRADITOS_DE_RICOTA].[Pedido] P ON P.ped_numero = M.Pedido_Numero
+        INNER JOIN [CUADRADITOS_DE_RICOTA].[Detalle_pedido] DP ON DP.detP_pedido = P.ped_codigo
+            AND DP.detP_cantidad = M.Detalle_Pedido_Cantidad
+            AND DP.detP_precio = M.Detalle_Pedido_Precio
+            AND DP.detP_subtotal = M.Detalle_Pedido_SubTotal
+        WHERE M.Detalle_Factura_Cantidad IS NOT NULL
     END;
-        PRINT 'carga tabla Factura'
+    PRINT 'carga tabla Factura'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Factura](fac_cliente,fac_numero,fac_sucursal,fac_fecha,fac_detalle,fac_total)     
-        select distinct clie_codigo,Factura_Numero,sucu_codigo,Factura_Fecha,detF_codigo,Factura_Total
-        from [GD1C2025].[gd_esquema].[Maestra]  JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] ON Sucursal_NroSucursal=Sucursal_NroSucursal
-                                                JOIN [CUADRADITOS_DE_RICOTA].[Cliente] on   clie_dni    +clie_nombre    +clie_apellido    +clie_fechaNacimiento    +clie_direccion    +clie_mail = 
-                                                                                            Cliente_Dni +Cliente_Nombre +Cliente_Apellido +Cliente_FechaNacimiento +Cliente_Direccion +Cliente_Mail
-                                                LEFT JOIN [CUADRADITOS_DE_RICOTA].[detalle_facturacion] on  detF_precioUnitario    +detF_cantidad            +detF_subtotal =
-                                                                                                            Detalle_Factura_Precio +Detalle_Factura_Cantidad +Detalle_Factura_SubTotal
-        where Factura_Numero is not null
+        SELECT DISTINCT clie_codigo, M.Factura_Numero, sucu_codigo, M.Factura_Fecha, detF_codigo, M.Factura_Total
+        FROM [GD1C2025].[gd_esquema].[Maestra] M
+        INNER JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] S ON S.sucu_codigo = M.Sucursal_NroSucursal
+        INNER JOIN [CUADRADITOS_DE_RICOTA].[Cliente] C ON C.clie_dni = M.Cliente_Dni
+        INNER JOIN [CUADRADITOS_DE_RICOTA].[detalle_facturacion] DF ON  
+            DF.detF_precioUnitario = M.Detalle_Factura_Precio AND
+            DF.detF_cantidad = M.Detalle_Factura_Cantidad AND
+            DF.detF_subtotal = M.Detalle_Factura_SubTotal
+        WHERE M.Factura_Numero IS NOT NULL
     END;
-        PRINT 'carga tabla Envio'
+    PRINT 'carga tabla Envio'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Envio](env_factura,env_fechaProgramada,env_fechaEntrega,env_importeTraslado,env_importeDeSubida,env_total,env_numero)
-        select distinct Factura_Numero,Envio_Fecha,Envio_Fecha_Programada,Envio_Fecha,Envio_ImporteTraslado,Envio_importeSubida,Envio_Total,Envio_Numero
-        from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].[Factura] on fac_numero +fac_fecha +fac_total = Factura_Numero +Factura_Fecha +Factura_Total
-        where Envio_Numero is not null     
-     
-
+        select distinct fac_codigo,Envio_Fecha_Programada,Envio_Fecha,Envio_ImporteTraslado,Envio_importeSubida,Envio_Total,Envio_Numero
+        from [GD1C2025].[gd_esquema].[Maestra] 
+        JOIN [CUADRADITOS_DE_RICOTA].[Factura] on fac_numero = Factura_Numero 
+            AND fac_fecha = Factura_Fecha 
+            AND fac_total = Factura_Total
+        where Envio_Numero is not null
     END;
 END;
 GO
