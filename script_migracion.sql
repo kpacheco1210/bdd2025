@@ -192,7 +192,7 @@ ALTER TABLE [CUADRADITOS_DE_RICOTA].[ModeloSillon]
 ADD CONSTRAINT PK_ModeloSillon PRIMARY KEY (mod_codigo);
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Dimension]
-ADD CONSTRAINT PK_Dimension PRIMARY KEY (mod_codigo);
+ADD CONSTRAINT PK_Dimension PRIMARY KEY (med_codigo);
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Sillon]
 ADD CONSTRAINT PK_Sillon PRIMARY KEY (sill_codigo);
@@ -517,10 +517,9 @@ BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Telefono] (tel_numero,tel_cliente,tel_sucursal,tel_proveedor)
             select distinct Proveedor_Telefono,null,null,pro_codigo
             from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].[proveedor] on pro_razonSocial=Proveedor_RazonSocial
-            where Proveedor_RazonSocial is not null
-        union
+            where Proveedor_RazonSocial is not null        union
             select distinct Sucursal_telefono,null,sucu_codigo,null
-            from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=Sucursal_NroSucursal
+            from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=sucu_codigo
             where Sucursal_NroSucursal is not null
         union
             select distinct Cliente_Telefono,clie_codigo,null,null
@@ -540,9 +539,8 @@ BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Compra](com_sucursal,com_proveedor,com_fecha,com_detalle,com_total,com_numero)
         select distinct sucu_codigo,pro_codigo,Compra_Fecha,detC_codigo,Compra_Total,Compra_Numero
         from [GD1C2025].[gd_esquema].[Maestra]  JOIN [CUADRADITOS_DE_RICOTA].[Detalle_compra] on Detalle_Compra_Cantidad +Detalle_Compra_Precio +Detalle_Compra_SubTotal =
-                                                                                                detC_cantidad           +detC_precioUnitario   +detC_subtotal
-                                                JOIN [CUADRADITOS_DE_RICOTA].[proveedor] on Proveedor_RazonSocial=pro_razonSocial
-                                                left JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=Sucursal_NroSucursal
+                                                                                                detC_cantidad           +detC_precioUnitario   +detC_subtotal                                                JOIN [CUADRADITOS_DE_RICOTA].[proveedor] on Proveedor_RazonSocial=pro_razonSocial
+                                                left JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=sucu_codigo
         where Compra_Numero is not null
     END;
         PRINT 'carga tabla PedidoCancelacion'
