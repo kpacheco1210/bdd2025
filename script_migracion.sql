@@ -2,6 +2,82 @@
 
 -- aca tenes q hacer la limpieza de lo q esta antes
 
+GO
+CREATE PROCEDURE [CUADRADITOS_DE_RICOTA].[CLEAN]
+AS
+BEGIN
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Envio')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Envio];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Factura')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Factura];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'detalle_facturacion')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[detalle_facturacion];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Detalle_pedido')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Detalle_pedido];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Pedido')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Pedido];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Estado')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Estado];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'PedidoCancelacion')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[PedidoCancelacion];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Compra')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Compra];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Detalle_compra')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Detalle_compra];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Telefono')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Telefono];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'proveedor')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[proveedor];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Sucursal')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Sucursal];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Cliente')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Cliente];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Localidad')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Localidad];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Provincia')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Provincia];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Relleno')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Relleno];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Tela')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Tela];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Madera')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Madera];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'sillon_material')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[sillon_material];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Material')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Material];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Sillon')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Sillon];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Dimension')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[Dimension];
+    
+    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'ModeloSillon')
+        DROP TABLE [CUADRADITOS_DE_RICOTA].[ModeloSillon];
+END
+GO
+
+
 
 
 CREATE PROCEDURE [CUADRADITOS_DE_RICOTA].[CREATE_DDL]
@@ -611,4 +687,32 @@ BEGIN
         where Envio_Numero is not null
     END;
 END;
+GO
+
+
+/* Ejecutamos los SP en una transaccion, para pasar de un estado consistente a otro consistente.*/
+ BEGIN TRANSACTION
+ BEGIN TRY
+	EXEC [CUADRADITOS_DE_RICOTA].[CLEAN]
+	EXEC [CUADRADITOS_DE_RICOTA].[CREATE_DDL];
+	EXEC [CUADRADITOS_DE_RICOTA].[CREATE_DML];
+END TRY
+BEGIN CATCH
+    ROLLBACK TRANSACTION;
+	THROW 50001, 'Error al cargar el modelo OLTP, ninguna tabla fue cargada',1;
+END CATCH
+
+ IF (EXISTS (SELECT 1 FROM [CUADRADITOS_DE_RICOTA].[Pedido])
+   AND EXISTS (SELECT 1 FROM [CUADRADITOS_DE_RICOTA].[Factura]))
+
+   BEGIN
+	PRINT 'Modelo OLTP creado y cargado correctamente.';
+	COMMIT TRANSACTION;
+   END
+	 ELSE
+   BEGIN
+    ROLLBACK TRANSACTION;
+	THROW 50002, 'Hubo un error al cargar una o más tablas. Rollback Transaction: ninguna tabla fue cargada en la base.',1;
+   END
+
 GO
