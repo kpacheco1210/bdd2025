@@ -1,6 +1,71 @@
-Changed database context to 'GD1C2025'.
-Operand type clash: datetime2 is incompatible with bigint
-119
-CUADRADITOS_DE_RICOTA.CREATE_DML
-Msg 206, Level 16, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure CUADRADITOS_DE_RICOTA.CREATE_DML, Line 119
-Operand type clash: datetime2 is incompatible with bigint
+Changed database context to 'CUADRADITOS_DE_RICOTA'.
+cargando tabla ModeloSillon
+
+(6 rows affected)
+carga tabla Dimension
+
+(4 rows affected)
+carga tabla Sillon
+
+(54831 rows affected)
+carga tabla Material
+
+(9 rows affected)
+carga tabla sillon_material
+
+(55174 rows affected)
+cargar tabla Madera
+
+(3 rows affected)
+carga tabla Tela
+
+(3 rows affected)
+carga tabla Relleno
+
+(3 rows affected)
+carga tabla Provincia
+
+(24 rows affected)
+carga tabla Localidad
+
+(14768 rows affected)
+carga tabla Cliente
+
+(29479 rows affected)
+carga tabla Sucursal
+
+(8 rows affected)
+carga tabla Proveedor
+
+(9 rows affected)
+carga tabla Telefono
+
+(29496 rows affected)
+carga tabla Detalle_compra
+
+(654 rows affected)
+carga tabla Compra
+
+(1179 rows affected)
+carga tabla PedidoCancelacion
+
+(1458 rows affected)
+carga tabla Estado
+
+(2 rows affected)
+carga tabla Pedido
+
+(31851 rows affected)
+carga tabla Detalle_pedido
+
+(63633 rows affected)
+carga tabla detalle_facturacion
+
+(47025 rows affected)
+carga tabla Factura
+
+(121514 rows affected)
+carga tabla Envio
+
+(27117 rows affected)
+Modelo OLTP creado y cargado correctamente.
