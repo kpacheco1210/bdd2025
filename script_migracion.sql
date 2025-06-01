@@ -4,21 +4,23 @@ IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'CUADRADITOS_DE_RICOTA')
 BEGIN
     EXEC('CREATE SCHEMA [CUADRADITOS_DE_RICOTA]');
 END
-
 GO
+
 IF OBJECT_ID('[CUADRADITOS_DE_RICOTA].[CLEAN]', 'P') IS NOT NULL
     DROP PROCEDURE [CUADRADITOS_DE_RICOTA].[CLEAN];
 GO
+
 IF OBJECT_ID('[CUADRADITOS_DE_RICOTA].[CREATE_DDL]', 'P') IS NOT NULL
     DROP PROCEDURE [CUADRADITOS_DE_RICOTA].[CREATE_DDL];
 GO
-GO
+
+
 IF OBJECT_ID('[CUADRADITOS_DE_RICOTA].[CREATE_DML]', 'P') IS NOT NULL
     DROP PROCEDURE [CUADRADITOS_DE_RICOTA].[CREATE_DML];
-
+GO
 -- aca tenes q hacer la limpieza de lo q esta antes
 
-GO
+
 CREATE PROCEDURE [CUADRADITOS_DE_RICOTA].[CLEAN]
 AS
 BEGIN
@@ -116,7 +118,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Dimension](
 );
 
 CREATE TABLE [CUADRADITOS_DE_RICOTA].[Sillon](
-    sill_codigo bigint,--pk
+    sill_codigo bigint not null,--pk
     sill_modelo bigint,--fk
     sill_dimension int --fk
 );
@@ -177,7 +179,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Cliente](
 );
 
 CREATE TABLE [CUADRADITOS_DE_RICOTA].[Sucursal](
-    sucu_codigo bigint,--pk
+    sucu_codigo bigint not null,--pk
     sucu_direccion NVARCHAR(255),
     sucu_mail NVARCHAR(255),
     sucu_localidad int--fk
@@ -196,7 +198,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Telefono](
     tel_codigo int IDENTITY(1,1),--pk
     tel_numero NVARCHAR(255),
     tel_cliente int,--fk
-    tel_sucursal int,--fk
+    tel_sucursal bigint,--fk
     tel_proveedor int--fk
 );
 
@@ -210,7 +212,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Detalle_compra](
 
 CREATE TABLE [CUADRADITOS_DE_RICOTA].[Compra](
     com_codigo int IDENTITY(1,1),--pk
-    com_sucursal int,--fk
+    com_sucursal bigint,--fk
     com_proveedor int,--fk
     com_fecha DATETIME2(6),
     com_detalle int,--fk
@@ -231,7 +233,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Estado](
 
 CREATE TABLE [CUADRADITOS_DE_RICOTA].[Pedido](
     ped_codigo int IDENTITY(1,1),--pk
-    ped_sucursal int,--fk
+    ped_sucursal bigint,--fk
     ped_cliente int,--fk
     ped_fecha DATETIME2(6),
     ped_total DECIMAL(18,2),
@@ -261,7 +263,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Factura](
     fac_codigo int IDENTITY(1,1),--pk
     fac_cliente int,--fk
     fac_numero bigint,
-    fac_sucursal int,--fk
+    fac_sucursal bigint,--fk
     fac_fecha DATETIME2(6),
     fac_detalle int,--fk
     fac_total DECIMAL(38,2)
@@ -511,7 +513,7 @@ BEGIN
         PRINT 'carga tabla Sillon'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Sillon] (sill_codigo,sill_modelo,sill_dimension)
-        SELECT distinct [Sillon_Codigo],[Sillon_Modelo_Codigo],D.med_codigo
+        SELECT distinct CAST([Sillon_Codigo] AS bigint),[Sillon_Modelo_Codigo],D.med_codigo
         FROM [GD1C2025].[gd_esquema].[Maestra] 
         JOIN [CUADRADITOS_DE_RICOTA].[Dimension] D on [Sillon_Medida_Alto]+[Sillon_Medida_Ancho]+[Sillon_Medida_Profundidad]+[Sillon_Medida_Precio]=med_alto+med_ancho+med_profundidad+med_precio
         where Sillon_Codigo is not null 
@@ -715,7 +717,11 @@ GO
 END TRY
 BEGIN CATCH
     ROLLBACK TRANSACTION;
-	THROW 50001, 'Error al cargar el modelo OLTP, ninguna tabla fue cargada',1;
+	--THROW 50001, 'Error al cargar el modelo OLTP, ninguna tabla fue cargada',1;
+    PRINT ERROR_MESSAGE();  -- Agrega esto
+    PRINT ERROR_LINE();     -- Línea del error original
+    PRINT ERROR_PROCEDURE(); -- Procedimiento que falló (si aplica)
+    THROW; 
 END CATCH
 
  IF (EXISTS (SELECT 1 FROM [CUADRADITOS_DE_RICOTA].[Pedido])

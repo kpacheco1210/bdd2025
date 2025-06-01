@@ -1,0 +1,6 @@
+Changed database context to 'GD1C2025'.
+Operand type clash: datetime2 is incompatible with bigint
+119
+CUADRADITOS_DE_RICOTA.CREATE_DML
+Msg 206, Level 16, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure CUADRADITOS_DE_RICOTA.CREATE_DML, Line 119
+Operand type clash: datetime2 is incompatible with bigint
