@@ -204,26 +204,29 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Telefono](
     tel_proveedor int--fk
 );
 
+CREATE TABLE [CUADRADITOS_DE_RICOTA].[Compra](
+    com_codigo int IDENTITY(1,1),
+    com_numero DECIMAL(18,0),
+    com_sucursal bigint,--fk
+    com_proveedor int,--fk
+    com_fecha DATETIME2(6),
+    com_total DECIMAL(18,2)
+    
+);
+
 CREATE TABLE [CUADRADITOS_DE_RICOTA].[Detalle_compra](
-    detC_codigo int IDENTITY(1,1),
+    detC_codigo int IDENTITY(1,1), --PK
+    detC_compra DECIMAL(18,0), -- FK
     detC_material int,--fk
     detC_precioUnitario DECIMAL(18,2),
     detC_cantidad DECIMAL(18,0),
     detC_subtotal DECIMAL(18,2)
 );
 
-CREATE TABLE [CUADRADITOS_DE_RICOTA].[Compra](
-    com_codigo int IDENTITY(1,1),--pk
-    com_sucursal bigint,--fk
-    com_proveedor int,--fk
-    com_fecha DATETIME2(6),
-    com_detalle int,--fk
-    com_total DECIMAL(18,2),
-    com_numero DECIMAL(18,0)
-);
 
 CREATE TABLE [CUADRADITOS_DE_RICOTA].[PedidoCancelacion](
     pedCan_codigo int IDENTITY(1,1),--pk
+    pedCan_numPedido DECIMAL(18,0),
     pedCan_fecha DATETIME2(6),
     pedCan_motivo VARCHAR(255)
 );
@@ -248,7 +251,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Detalle_pedido](
     detP_codigo int IDENTITY(1,1),--pk
     detP_cantidad bigint,
     detP_precio DECIMAL(18,2),
-    detP_pedido int,--fk
+    detP_pedido DECIMAL(18,0),--fk
     detP_subtotal DECIMAL(18,2),
     detP_sillon bigint--sk
 );
@@ -424,11 +427,6 @@ ADD CONSTRAINT FK_Telefono_Proveedor
 FOREIGN KEY (tel_proveedor) REFERENCES [CUADRADITOS_DE_RICOTA].Proveedor(pro_codigo);
 
 
-ALTER TABLE [CUADRADITOS_DE_RICOTA].[Detalle_compra]
-ADD CONSTRAINT FK_Detalle_compra_Material
-FOREIGN KEY (detC_material) REFERENCES [CUADRADITOS_DE_RICOTA].Material(mat_codigo);
-
-
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Compra]
 ADD CONSTRAINT FK_Compra_Sucursal
 FOREIGN KEY (com_sucursal) REFERENCES [CUADRADITOS_DE_RICOTA].Sucursal(sucu_codigo);
@@ -437,9 +435,15 @@ ALTER TABLE [CUADRADITOS_DE_RICOTA].[Compra]
 ADD CONSTRAINT FK_Compra_Proveedor
 FOREIGN KEY (com_proveedor) REFERENCES [CUADRADITOS_DE_RICOTA].Proveedor(pro_codigo);
 
-ALTER TABLE [CUADRADITOS_DE_RICOTA].[Compra]
-ADD CONSTRAINT FK_Compra_Detalle_compra
-FOREIGN KEY (com_detalle) REFERENCES [CUADRADITOS_DE_RICOTA].Detalle_compra(detC_codigo);
+
+
+ALTER TABLE [CUADRADITOS_DE_RICOTA].[Detalle_compra]
+ADD CONSTRAINT FK_Detalle_compra_Material
+FOREIGN KEY (detC_material) REFERENCES [CUADRADITOS_DE_RICOTA].Material(mat_codigo);
+
+ALTER TABLE [CUADRADITOS_DE_RICOTA].[Detalle_compra]
+ADD CONSTRAINT FK_Detalle_compra_num_compra
+FOREIGN KEY (detC_compra) REFERENCES [CUADRADITOS_DE_RICOTA].Compra(com_codigo);
 
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Pedido]
@@ -461,7 +465,7 @@ FOREIGN KEY (ped_cancelacion) REFERENCES [CUADRADITOS_DE_RICOTA].PedidoCancelaci
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Detalle_pedido]
 ADD CONSTRAINT FK_Detalle_pedido_Pedido
-FOREIGN KEY (detP_pedido) REFERENCES [CUADRADITOS_DE_RICOTA].Pedido(ped_codigo);
+FOREIGN KEY (detP_pedido) REFERENCES [CUADRADITOS_DE_RICOTA].Pedido(ped_numero);
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Detalle_pedido]
 ADD CONSTRAINT FK_Detalle_pedido_Sillon
@@ -498,21 +502,21 @@ GO
 CREATE PROCEDURE [CUADRADITOS_DE_RICOTA].[CREATE_DML]
 AS
 BEGIN   
-        PRINT 'cargando tabla ModeloSillon'
+        PRINT 'Cargando tabla ModeloSillon'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[ModeloSillon] (mod_codigo,mod_nombre,mod_descripcion,mod_precio)
         SELECT distinct [Sillon_Modelo_Codigo],[Sillon_Modelo],[Sillon_Modelo_Descripcion],[Sillon_Modelo_Precio]
         FROM [GD1C2025].[gd_esquema].[Maestra]
         where Sillon_Modelo_Codigo is not null
     END;
-        PRINT 'carga tabla Dimension'
+        PRINT 'Carga tabla Dimension'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Dimension] (med_alto,med_ancho,med_profundidad,med_precio)
         SELECT distinct [Sillon_Medida_Alto],[Sillon_Medida_Ancho],[Sillon_Medida_Profundidad],[Sillon_Medida_Precio]
         FROM [GD1C2025].[gd_esquema].[Maestra]
         where Sillon_Medida_Alto is not null
     END;
-        PRINT 'carga tabla Sillon'
+        PRINT 'Carga tabla Sillon'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Sillon] (sill_codigoMaestra,sill_modelo,sill_dimension)
         SELECT distinct CAST([Sillon_Codigo] AS bigint),CAST([Sillon_Modelo_Codigo] AS bigint),D.med_codigo
@@ -523,14 +527,14 @@ BEGIN
                                                     AND [Sillon_Medida_Precio] = D.med_precio
         where Sillon_Codigo is not null 
     END;
-        PRINT 'carga tabla Material'
+        PRINT 'Carga tabla Material'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Material] (mat_precio,mat_descripcion,mat_nombre)
         SELECT distinct [Material_Precio],[Material_Descripcion],[Material_Nombre]
         FROM [GD1C2025].[gd_esquema].[Maestra]
         where Material_Precio is not null
     END;
-    PRINT 'carga tabla sillon_material'
+    PRINT 'Carga tabla sillon_material'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[sillon_material] (sima_sillon, sima_material)
         SELECT DISTINCT sill_codigo, M.mat_codigo
@@ -545,28 +549,28 @@ BEGIN
           AND Maestra.[Material_Descripcion] IS NOT NULL
     END;
 
-        PRINT 'cargar tabla Madera'
+        PRINT 'Cargar tabla Madera'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Madera] (mad_material,mad_dureza,mad_color)
         select distinct mat_codigo,[Madera_Dureza],[Madera_Color]
         from [GD1C2025].[gd_esquema].[Maestra] join [CUADRADITOS_DE_RICOTA].Material on mat_descripcion=[Material_Descripcion]
         where Material_Tipo = 'Madera'
     END;
-        PRINT 'carga tabla Tela'
+        PRINT 'Carga tabla Tela'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Tela](tela_material,tela_color,tela_textura)
         select distinct mat_codigo,Tela_Color,Tela_Textura
         from [GD1C2025].[gd_esquema].[Maestra] join [CUADRADITOS_DE_RICOTA].Material on mat_descripcion=[Material_Descripcion]
         where Material_Tipo = 'Tela'
     END;
-        PRINT 'carga tabla Relleno'
+        PRINT 'Carga tabla Relleno'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Relleno](rell_material,rell_densidad)
         select distinct mat_codigo,Relleno_Densidad
         from [GD1C2025].[gd_esquema].[Maestra] join [CUADRADITOS_DE_RICOTA].Material on mat_descripcion=[Material_Descripcion]
         where Material_Tipo = 'Relleno'
     END;
-        PRINT 'carga tabla Provincia' 
+        PRINT 'Carga tabla Provincia' 
         /*Las prov se encuentran en tres filas, para cliente, suscursal y proveedor, sin embargo cliente cuenta con las 24 provincias posibles asi q las tomaremos de ahi*/
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Provincia](prov_nombre)
@@ -574,7 +578,7 @@ BEGIN
         from [GD1C2025].[gd_esquema].[Maestra]
         WHERE Cliente_Provincia is not null
     END;
-        PRINT 'carga tabla Localidad'
+        PRINT 'Carga tabla Localidad'
     BEGIN
         INSERT into [CUADRADITOS_DE_RICOTA].[Localidad] (loc_nombre,loc_provincia)
             select distinct Cliente_Localidad,prov_codigo
@@ -589,7 +593,7 @@ BEGIN
             from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].Provincia on Proveedor_Provincia=prov_nombre
             where Proveedor_Localidad is not null
     END;
-        PRINT 'carga tabla Cliente'
+        PRINT 'Carga tabla Cliente'
     BEGIN
         INSERT into [CUADRADITOS_DE_RICOTA].[Cliente] (clie_dni,clie_nombre,clie_apellido,clie_fechaNacimiento,clie_direccion,clie_mail,clie_localidad)
         select distinct Cliente_Dni,Cliente_Nombre,Cliente_Apellido,Cliente_FechaNacimiento,Cliente_Direccion,Cliente_Mail,loc_codigo
@@ -597,7 +601,7 @@ BEGIN
                                                 join [CUADRADITOS_DE_RICOTA].[Localidad] on Cliente_Localidad=loc_nombre and prov_codigo=loc_provincia
         where Cliente_Dni is not null
     END;
-        PRINT 'carga tabla Sucursal'
+        PRINT 'Carga tabla Sucursal'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Sucursal] (sucu_codigo,sucu_direccion,sucu_mail,sucu_localidad)
         select distinct Sucursal_NroSucursal,Sucursal_Direccion,Sucursal_mail,loc_codigo
@@ -605,7 +609,7 @@ BEGIN
                                                 join [CUADRADITOS_DE_RICOTA].[Localidad] on Sucursal_Localidad=loc_nombre and prov_codigo=loc_provincia
         where Sucursal_NroSucursal is not null
     END;
-        PRINT 'carga tabla Proveedor'
+        PRINT 'Carga tabla Proveedor'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[proveedor] (pro_razonSocial,pro_cuit,pro_direccion,pro_mail,pro_localidad)
         select distinct Proveedor_RazonSocial,Proveedor_Cuit,Proveedor_Direccion,Proveedor_Mail,loc_codigo
@@ -613,7 +617,7 @@ BEGIN
                                                 join [CUADRADITOS_DE_RICOTA].[Localidad] on Proveedor_Localidad=loc_nombre and prov_codigo=loc_provincia
         where Proveedor_RazonSocial is not null
     END;
-        PRINT 'carga tabla Telefono'
+        PRINT 'Carga tabla Telefono'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Telefono] (tel_numero,tel_cliente,tel_sucursal,tel_proveedor)
             select distinct Proveedor_Telefono,null,null,pro_codigo
@@ -635,37 +639,41 @@ BEGIN
 
             where Cliente_Telefono is not null
     END;
-        PRINT 'carga tabla Detalle_compra'
+        
+        PRINT 'Carga tabla Compra'
     BEGIN
-        INSERT INTO [CUADRADITOS_DE_RICOTA].[Detalle_compra](detC_material,detC_precioUnitario,detC_cantidad,detC_subtotal)
-        select distinct mat_codigo,Detalle_Compra_Precio,Detalle_Compra_Cantidad,Detalle_Compra_SubTotal
-        from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].Material on mat_descripcion=Material_Descripcion
-        where Material_Descripcion is not null
-    end;
-        PRINT 'carga tabla Compra'
-    BEGIN
-        INSERT INTO [CUADRADITOS_DE_RICOTA].[Compra](com_sucursal,com_proveedor,com_fecha,com_detalle,com_total,com_numero)
-        select distinct sucu_codigo,pro_codigo,Compra_Fecha,detC_codigo,Compra_Total,Compra_Numero
-        from [GD1C2025].[gd_esquema].[Maestra]  JOIN [CUADRADITOS_DE_RICOTA].[Detalle_compra] on Detalle_Compra_Cantidad +Detalle_Compra_Precio +Detalle_Compra_SubTotal =
-                                                                                                detC_cantidad           +detC_precioUnitario   +detC_subtotal                                                JOIN [CUADRADITOS_DE_RICOTA].[proveedor] on Proveedor_RazonSocial=pro_razonSocial
-                                                left JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=sucu_codigo
-        where Compra_Numero is not null
+        INSERT INTO [CUADRADITOS_DE_RICOTA].[Compra](com_total,com_numero,com_sucursal,com_proveedor,com_fecha)
+        select distinct Compra_Total,Compra_Numero,sucu_codigo,pro_codigo,Compra_Fecha
+        from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].[proveedor] on Proveedor_RazonSocial=pro_razonSocial
+        left JOIN [CUADRADITOS_DE_RICOTA].[Sucursal] on Sucursal_NroSucursal=sucu_codigo
+        where Compra_Numero is not null;
     END;
-        PRINT 'carga tabla PedidoCancelacion'
+        PRINT 'Carga tabla Detalle_compra'
+    BEGIN
+        INSERT INTO [CUADRADITOS_DE_RICOTA].[Detalle_compra](detC_material,detC_precioUnitario,detC_cantidad,detC_subtotal,detC_compra)
+        select mat_codigo,Detalle_Compra_Precio,Detalle_Compra_Cantidad,Detalle_Compra_SubTotal,com_codigo
+        from [GD1C2025].[gd_esquema].[Maestra] JOIN [CUADRADITOS_DE_RICOTA].Material ON mat_descripcion = Material_Descripcion
+		join CUADRADITOS_DE_RICOTA.Compra on Compra_Total = com_total
+        where Detalle_Compra_Precio IS NOT NULL AND
+			  Detalle_Compra_Cantidad IS NOT NULL AND
+			  Detalle_Compra_SubTotal IS NOT NULL AND
+			  Material_Descripcion IS NOT NULL;
+    end;
+        PRINT 'Carga tabla PedidoCancelacion'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[PedidoCancelacion](pedCan_fecha,pedCan_motivo)
         select distinct Pedido_Cancelacion_Fecha,Pedido_Cancelacion_Motivo
         from [GD1C2025].[gd_esquema].[Maestra] 
         where Pedido_Cancelacion_Fecha is not null
     END;
-        PRINT 'carga tabla Estado'
+        PRINT 'Carga tabla Estado'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Estado](est_nombre)  
         select distinct Pedido_Estado
         from [GD1C2025].[gd_esquema].[Maestra] 
         where Pedido_Estado is not null   
     END;
-    PRINT 'carga tabla Pedido'
+    PRINT 'Carga tabla Pedido'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Pedido](ped_sucursal,ped_cliente,ped_fecha,ped_total,ped_estado,ped_cancelacion,ped_numero)
         select distinct sucu_codigo,clie_codigo,Pedido_Fecha,Pedido_Total,est_codigo,pedCan_codigo,Pedido_Numero
@@ -676,7 +684,7 @@ BEGIN
         LEFT JOIN [CUADRADITOS_DE_RICOTA].[PedidoCancelacion] on Pedido_Cancelacion_Fecha=pedCan_fecha and Pedido_Cancelacion_Motivo=pedCan_motivo
         where Pedido_Numero is not null
     END;
-        PRINT 'carga tabla Detalle_pedido'
+        PRINT 'Carga tabla Detalle_pedido'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Detalle_pedido](detP_cantidad,detP_precio,detP_pedido,detP_subtotal,detP_sillon)    
         select distinct Detalle_Pedido_Cantidad,Detalle_Pedido_Precio,ped_codigo,Detalle_Pedido_SubTotal,sill_codigo
@@ -685,7 +693,7 @@ BEGIN
                                                                 Maestra.[Sillon_Codigo] = s.sill_codigoMaestra and Maestra.[Sillon_Modelo_Codigo]=sill_modelo
         where Detalle_Pedido_Cantidad is not null
     END;
-    PRINT 'carga tabla detalle_facturacion'
+    PRINT 'Carga tabla detalle_facturacion'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[detalle_facturacion](detF_detallePedido,detF_precioUnitario,detF_cantidad,detF_subtotal)     
         SELECT DISTINCT detP_codigo, Detalle_Factura_Precio, Detalle_Factura_Cantidad, Detalle_Factura_SubTotal
@@ -697,7 +705,7 @@ BEGIN
             AND DP.detP_subtotal = M.Detalle_Pedido_SubTotal
         WHERE M.Detalle_Factura_Cantidad IS NOT NULL
     END;
-    PRINT 'carga tabla Factura'
+    PRINT 'Carga tabla Factura'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Factura](fac_cliente,fac_numero,fac_sucursal,fac_fecha,fac_detalle,fac_total)     
         SELECT DISTINCT clie_codigo, M.Factura_Numero, sucu_codigo, M.Factura_Fecha, detF_codigo, M.Factura_Total
@@ -714,7 +722,7 @@ BEGIN
                     )DF
         WHERE M.Factura_Numero IS NOT NULL
     END;
-    PRINT 'carga tabla Envio'
+    PRINT 'Carga tabla Envio'
     BEGIN
         INSERT INTO [CUADRADITOS_DE_RICOTA].[Envio](env_factura,env_fechaProgramada,env_fechaEntrega,env_importeTraslado,env_importeDeSubida,env_total,env_numero)
         select distinct F.fac_codigo,Envio_Fecha_Programada,Envio_Fecha,Envio_ImporteTraslado,Envio_importeSubida,Envio_Total,Envio_Numero
