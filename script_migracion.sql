@@ -216,7 +216,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Compra](
 
 CREATE TABLE [CUADRADITOS_DE_RICOTA].[Detalle_compra](
     detC_codigo int IDENTITY(1,1), --PK
-    detC_compra DECIMAL(18,0), -- FK
+    detC_compra int, -- FK
     detC_material int,--fk
     detC_precioUnitario DECIMAL(18,2),
     detC_cantidad DECIMAL(18,0),
@@ -251,7 +251,7 @@ CREATE TABLE [CUADRADITOS_DE_RICOTA].[Detalle_pedido](
     detP_codigo int IDENTITY(1,1),--pk
     detP_cantidad bigint,
     detP_precio DECIMAL(18,2),
-    detP_pedido DECIMAL(18,0),--fk
+    detP_pedido int,--fk
     detP_subtotal DECIMAL(18,2),
     detP_sillon bigint--sk
 );
@@ -465,7 +465,7 @@ FOREIGN KEY (ped_cancelacion) REFERENCES [CUADRADITOS_DE_RICOTA].PedidoCancelaci
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Detalle_pedido]
 ADD CONSTRAINT FK_Detalle_pedido_Pedido
-FOREIGN KEY (detP_pedido) REFERENCES [CUADRADITOS_DE_RICOTA].Pedido(ped_numero);
+FOREIGN KEY (detP_pedido) REFERENCES [CUADRADITOS_DE_RICOTA].Pedido(ped_codigo);
 
 ALTER TABLE [CUADRADITOS_DE_RICOTA].[Detalle_pedido]
 ADD CONSTRAINT FK_Detalle_pedido_Sillon

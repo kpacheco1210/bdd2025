@@ -1,71 +1,71 @@
 Changed database context to 'CUADRADITOS_DE_RICOTA'.
-cargando tabla ModeloSillon
+Cargando tabla ModeloSillon
 
-(7 rows affected)
-carga tabla Dimension
+(6 rows affected)
+Carga tabla Dimension
 
 (4 rows affected)
-carga tabla Sillon
+Carga tabla Sillon
 
-(72166 rows affected)
-carga tabla Material
+(54831 rows affected)
+Carga tabla Material
 
 (9 rows affected)
-carga tabla sillon_material
+Carga tabla sillon_material
 
-(216498 rows affected)
-cargar tabla Madera
-
-(3 rows affected)
-carga tabla Tela
+(55174 rows affected)
+Cargar tabla Madera
 
 (3 rows affected)
-carga tabla Relleno
+Carga tabla Tela
 
 (3 rows affected)
-carga tabla Provincia
+Carga tabla Relleno
+
+(3 rows affected)
+Carga tabla Provincia
 
 (24 rows affected)
-carga tabla Localidad
+Carga tabla Localidad
 
-(12268 rows affected)
-carga tabla Cliente
+(14768 rows affected)
+Carga tabla Cliente
 
-(20509 rows affected)
-carga tabla Sucursal
+(29479 rows affected)
+Carga tabla Sucursal
+
+(8 rows affected)
+Carga tabla Proveedor
 
 (9 rows affected)
-carga tabla Proveedor
+Carga tabla Telefono
 
-(10 rows affected)
-carga tabla Telefono
+(29496 rows affected)
+Carga tabla Compra
 
-(20528 rows affected)
-carga tabla Detalle_compra
+(131 rows affected)
+Carga tabla Detalle_compra
 
-(409 rows affected)
-carga tabla Compra
+(1179 rows affected)
+Carga tabla PedidoCancelacion
 
-(711 rows affected)
-carga tabla PedidoCancelacion
-
-(1925 rows affected)
-carga tabla Estado
+(1458 rows affected)
+Carga tabla Estado
 
 (2 rows affected)
-carga tabla Pedido
+Carga tabla Pedido
 
-(23610 rows affected)
-carga tabla Detalle_pedido
+(31851 rows affected)
+Carga tabla Detalle_pedido
 
-(83104 rows affected)
-carga tabla detalle_facturacion
+(63633 rows affected)
+Carga tabla detalle_facturacion
 
-(61228 rows affected)
-carga tabla Factura
+(47025 rows affected)
+Carga tabla Factura
 
-(78495 rows affected)
-carga tabla Envio
+(121514 rows affected)
+Carga tabla Envio
 
-(17408 rows affected)
+(27117 rows affected)
 Modelo OLTP creado y cargado correctamente.
