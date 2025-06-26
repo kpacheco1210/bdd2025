@@ -1,19 +1,31 @@
 Changed database context to 'CUADRADITOS_DE_RICOTA'.
 Cargando tabla ModeloSillon
 
+<<<<<<< HEAD
 (6 rows affected)
+=======
+(7 rows affected)
+>>>>>>> 281d479bda705718603e99e284b0bfa889216850
 Carga tabla Dimension
 
 (4 rows affected)
 Carga tabla Sillon
 
+<<<<<<< HEAD
 (54831 rows affected)
+=======
+(72166 rows affected)
+>>>>>>> 281d479bda705718603e99e284b0bfa889216850
 Carga tabla Material
 
 (9 rows affected)
 Carga tabla sillon_material
 
+<<<<<<< HEAD
 (55174 rows affected)
+=======
+(216498 rows affected)
+>>>>>>> 281d479bda705718603e99e284b0bfa889216850
 Cargar tabla Madera
 
 (3 rows affected)
@@ -28,6 +40,7 @@ Carga tabla Provincia
 (24 rows affected)
 Carga tabla Localidad
 
+<<<<<<< HEAD
 (14768 rows affected)
 Carga tabla Cliente
 
@@ -50,11 +63,36 @@ Carga tabla Detalle_compra
 Carga tabla PedidoCancelacion
 
 (1458 rows affected)
+=======
+(12268 rows affected)
+Carga tabla Cliente
+
+(20509 rows affected)
+Carga tabla Sucursal
+
+(9 rows affected)
+Carga tabla Proveedor
+
+(10 rows affected)
+Carga tabla Telefono
+
+(20528 rows affected)
+Carga tabla Compra
+
+(79 rows affected)
+Carga tabla Detalle_compra
+
+(711 rows affected)
+Carga tabla PedidoCancelacion
+
+(3101 rows affected)
+>>>>>>> 281d479bda705718603e99e284b0bfa889216850
 Carga tabla Estado
 
 (2 rows affected)
 Carga tabla Pedido
 
+<<<<<<< HEAD
 (31851 rows affected)
 Carga tabla Detalle_pedido
 
@@ -65,6 +103,18 @@ Carga tabla detalle_facturacion
 Carga tabla Factura
 
 (121514 rows affected)
+=======
+(20509 rows affected)
+Carga tabla Detalle_pedido
+
+(72166 rows affected)
+Carga tabla detalle_facturacion
+
+(61087 rows affected)
+Carga tabla Factura
+
+(78495 rows affected)
+>>>>>>> 281d479bda705718603e99e284b0bfa889216850
 Carga tabla Envio
 
 (27117 rows affected)
