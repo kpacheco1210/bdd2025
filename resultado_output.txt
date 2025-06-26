@@ -1,71 +1,71 @@
 Changed database context to 'CUADRADITOS_DE_RICOTA'.
-cargando tabla ModeloSillon
+Cargando tabla ModeloSillon
 
 (7 rows affected)
-carga tabla Dimension
+Carga tabla Dimension
 
 (4 rows affected)
-carga tabla Sillon
+Carga tabla Sillon
 
 (72166 rows affected)
-carga tabla Material
+Carga tabla Material
 
 (9 rows affected)
-carga tabla sillon_material
+Carga tabla sillon_material
 
 (216498 rows affected)
-cargar tabla Madera
+Cargar tabla Madera
 
 (3 rows affected)
-carga tabla Tela
+Carga tabla Tela
 
 (3 rows affected)
-carga tabla Relleno
+Carga tabla Relleno
 
 (3 rows affected)
-carga tabla Provincia
+Carga tabla Provincia
 
 (24 rows affected)
-carga tabla Localidad
+Carga tabla Localidad
 
 (12268 rows affected)
-carga tabla Cliente
+Carga tabla Cliente
 
 (20509 rows affected)
-carga tabla Sucursal
+Carga tabla Sucursal
 
 (9 rows affected)
-carga tabla Proveedor
+Carga tabla Proveedor
 
 (10 rows affected)
-carga tabla Telefono
+Carga tabla Telefono
 
 (20528 rows affected)
-carga tabla Detalle_compra
+Carga tabla Compra
 
-(409 rows affected)
-carga tabla Compra
+(79 rows affected)
+Carga tabla Detalle_compra
 
 (711 rows affected)
-carga tabla PedidoCancelacion
+Carga tabla PedidoCancelacion
 
-(1925 rows affected)
-carga tabla Estado
+(3101 rows affected)
+Carga tabla Estado
 
 (2 rows affected)
-carga tabla Pedido
+Carga tabla Pedido
 
-(23610 rows affected)
-carga tabla Detalle_pedido
+(20509 rows affected)
+Carga tabla Detalle_pedido
 
-(83104 rows affected)
-carga tabla detalle_facturacion
+(72166 rows affected)
+Carga tabla detalle_facturacion
 
-(61228 rows affected)
-carga tabla Factura
+(61087 rows affected)
+Carga tabla Factura
 
 (78495 rows affected)
-carga tabla Envio
+Carga tabla Envio
 
 (17408 rows affected)
 Modelo OLTP creado y cargado correctamente.
