@@ -55,25 +55,17 @@ Carga tabla Estado
 (2 rows affected)
 Carga tabla Pedido
 
-
-(31851 rows affected)
-Carga tabla Detalle_pedido
-
-(63633 rows affected)
-Carga tabla detalle_facturacion
-
-(47025 rows affected)
-Carga tabla Factura
-
-(121514 rows affected)
 (20509 rows affected)
 Carga tabla Detalle_pedido
 
 (72166 rows affected)
 Carga tabla Factura
 
-(78495 rows affected)
+(17408 rows affected)
+Carga tabla detalle_facturacion
+
+(61228 rows affected)
 Carga tabla Envio
 
-(27117 rows affected)
+(17408 rows affected)
 Modelo OLTP creado y cargado correctamente.
