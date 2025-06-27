@@ -1,0 +1,62 @@
+Changed database context to 'CUADRADITOS_DE_RICOTA'.
+Inicializando la creacion del modelo de Business Intelligence
+Msg 4511, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure VolumenDePedidos, Line 5
+Create View or Function failed because no column name was specified for column 5.
+Msg 4511, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure ConversionDePedidos, Line 3
+Create View or Function failed because no column name was specified for column 5.
+Msg 4511, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure TiempoPromedioDeFabricacion, Line 4
+Create View or Function failed because no column name was specified for column 4.
+Msg 4511, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure PromedioDeCompras, Line 3
+Create View or Function failed because no column name was specified for column 3.
+Msg 4511, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure ComprasPorTiepoDeMaterial, Line 3
+Create View or Function failed because no column name was specified for column 5.
+Msg 4511, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure PorcentajeDeCumplimientoDeEnvios, Line 3
+Create View or Function failed because no column name was specified for column 3.
+Msg 207, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Sucursales, Line 10
+Invalid column name 'sucu_numero'.
+Msg 137, Level 15, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Ventas, Line 24
+Must declare the scalar variable "@fecha_hora_factura".
+Msg 137, Level 15, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Ventas, Line 25
+Must declare the scalar variable "@fecha_hora_factura".
+Msg 137, Level 15, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Ventas, Line 26
+Must declare the scalar variable "@fecha_hora_factura".
+Msg 137, Level 15, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Envios, Line 30
+Must declare the scalar variable "@sucu_localidad".
+Msg 137, Level 15, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Envios, Line 31
+Must declare the scalar variable "@sucu_localidad".
+Msg 137, Level 15, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Envios, Line 33
+Must declare the scalar variable "@sucu_localidad".
+Msg 137, Level 15, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Envios, Line 36
+Must declare the scalar variable "@Factura_Anio".
+Msg 137, Level 15, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Envios, Line 37
+Must declare the scalar variable "@Factura_Mes".
+Msg 137, Level 15, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Envios, Line 38
+Must declare the scalar variable "@Factura_Cuatrimestre".
+Msg 137, Level 15, State 2, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Envios, Line 58
+Must declare the scalar variable "@codigo_sucursal".
+Msg 207, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Pedidos, Line 47
+Invalid column name 'Descripcion'.
+Msg 207, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Procedure BI_Migrar_Pedidos, Line 47
+Invalid column name 'CODIGO_RANGO_ETARIO'.
+Migracion de provincia
+
+(24 rows affected)
+Migracion de material
+
+(4 rows affected)
+Migracion de modelo
+
+(6 rows affected)
+Migracion de Turnos de venta
+
+(3 rows affected)
+Migracion de estado
+
+(2 rows affected)
+
+(1 rows affected)
+Migracion de rangos etarios
+
+(4 rows affected)
+Msg 50001, Level 16, State 1, Server DESKTOP-MKPJDHV\SQLEXPRESS, Line 25
+Error al cargar el modelo de BI, ninguna tabla fue cargada
