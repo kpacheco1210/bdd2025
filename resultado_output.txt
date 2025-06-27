@@ -59,12 +59,12 @@ Carga tabla Pedido
 Carga tabla Detalle_pedido
 
 (72166 rows affected)
-Carga tabla detalle_facturacion
-
-(61087 rows affected)
 Carga tabla Factura
 
-(78495 rows affected)
+(17408 rows affected)
+Carga tabla detalle_facturacion
+
+(61228 rows affected)
 Carga tabla Envio
 
 (17408 rows affected)
